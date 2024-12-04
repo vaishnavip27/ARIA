@@ -16,7 +16,7 @@ export const GradientButton: React.FC<GradientButtonProps> = ({
   return (
     <button
       className={cn(
-        "px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all duration-200",
+        "px-6 py-3 rounded-lg bg-gradient-to-br from-indigo-500 border border-white/20 transition-all duration-200",
         className
       )}
       {...props}

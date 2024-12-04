@@ -23,7 +23,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({
       className="p-6 rounded-xl bg-gray-800/50 hover:bg-gray-800/70 transition-colors"
     >
       <div className="flex items-center space-x-4">
-        <div className="p-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600">
+        <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 border border-white/20">
           <Icon className="w-6 h-6 text-white" />
         </div>
         <h3 className="text-xl font-bold text-white">{title}</h3>

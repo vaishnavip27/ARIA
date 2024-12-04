@@ -110,3 +110,21 @@ body {
   animation: gradient 15s ease infinite;
   background-size: 400% 400%;
 }
+
+.shiny-border {
+  border: 4px solid;
+  border-image-source: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
+  border-image-slice: 1;
+  background: transparent;
+  position: relative;
+  animation: shiny-border 2s linear infinite;
+}
+
+@keyframes shiny-border {
+  0% {
+    border-image-source: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
+  }
+  100% {
+    border-image-source: linear-gradient(450deg, #ff00ff, #00ffff, #ff00ff);
+  }
+}

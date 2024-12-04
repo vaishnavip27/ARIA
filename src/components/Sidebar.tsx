@@ -31,7 +31,7 @@ export function Sidebar({ onNewChat }: SidebarProps) {
               isExpanded ? "w-40 opacity-100" : "w-0 opacity-0"
             )}>
               <span className="text-white font-medium whitespace-nowrap">
-                Bolt AI
+                ARIA
               </span>
             </div>
           </div>

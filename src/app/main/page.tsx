@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,15 +22,11 @@ interface Message {
 const MessageBoxWithGradient = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="relative w-full">
-      {/* Gradient blur background */}
-      <div className="absolute inset-0 -z-10">
-        <GradientBlur />
-      </div>
-      
-      {/* Message box content */}
-      <div className="relative">
-        {children}
-      </div>
+      {/* Gradient background */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-75 blur-lg" />
+      {/* Additional gradient layer for depth */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-500 via-transparent to-transparent opacity-50" />
+      <div className="relative">{children}</div>
     </div>
   );
 };
@@ -63,7 +60,6 @@ export default function MainPage() {
         setError((err as Error).message);
       }
     };
-
     checkWalletStatus();
   }, []);
 
@@ -73,10 +69,10 @@ export default function MainPage() {
     try {
       const walletAddress = await connectToArConnect();
       setAddress(walletAddress);
-      return true; 
+      return true;
     } catch (err) {
       setError((err as Error).message);
-      return false; 
+      return false;
     } finally {
       setIsConnecting(false);
     }
@@ -86,7 +82,7 @@ export default function MainPage() {
     try {
       await disconnectFromArConnect();
       setAddress(null);
-      setIsFirstMessage(true); 
+      setIsFirstMessage(true);
     } catch (err) {
       setError((err as Error).message);
     }
@@ -96,14 +92,16 @@ export default function MainPage() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    
     if (!address) {
       const connected = await handleConnect();
       if (!connected) {
-        setMessages(prev => [...prev, {
-          content: "Please connect your wallet to continue.",
-          isUser: false
-        }]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            content: "Please connect your wallet to continue.",
+            isUser: false,
+          },
+        ]);
         return;
       }
     }
@@ -126,10 +124,12 @@ export default function MainPage() {
       <header className="fixed right-4 top-4 z-50 flex items-center gap-2">
         {address ? (
           <>
-            <div className="text-sm font-mono break-all">{address}</div>
+            <div className="text-sm font-mono break-all border border-white/20 p-2 rounded-xl font-medium text-white/70">
+              {address}
+            </div>
             <Button
               variant="ghost"
-              className="text-sm hover:bg-white/10 border border-red-500 text-red-500 rounded-xl"
+              className="text-sm bg-white/80 border border-black font-bold text-black rounded-xl"
               onClick={handleDisconnect}
             >
               Disconnect
@@ -140,13 +140,14 @@ export default function MainPage() {
             variant="ghost"
             onClick={handleConnect}
             disabled={isConnecting}
-            className={`text-sm hover:bg-white/10 border border-white rounded-xl ${isConnecting ? "cursor-not-allowed" : ""}`}
+            className={`text-sm hover:bg-white/0 border border-white rounded-xl ${
+              isConnecting ? "cursor-not-allowed" : ""
+            }`}
           >
             {isConnecting ? "Connecting..." : "Connect Wallet"}
           </Button>
         )}
       </header>
-
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex-1 pl-16 relative">
@@ -155,48 +156,49 @@ export default function MainPage() {
               <div className="absolute inset-0 z-0">
                 <GradientBlur />
               </div>
-
-              <div className="relative z-10 flex mb-12 items-center justify-center">
-                <div className="flex items-center w-[160px] justify-center p-1 rounded-full bg-transparent text-white text-center font-bold text-md">
-                  Introducing AI
-                </div>
-              </div>
-
-              <h1 className="mb-8 text-4xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent relative z-10">
-                What can I help you ship?
-              </h1>
-
-              <div className="relative w-full max-w-[770px] mx-auto z-10">
-                <div className="border border-white/20 rounded-lg overflow-hidden bg-[#27272a]">
-                  <form onSubmit={handleSubmit} className="relative z-10">
-                    <Input
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      className="h-[64px] rounded-lg border-0 bg-black pl-10 pr-20 text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
-                      placeholder="Ask v0 a question..."
-                    />
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 z-20">
-                      <Paperclip className="h-5 w-5 text-gray-400" />
+              <div className="flex flex-col items-center justify-center space-y-8 max-w-[770px] w-full relative z-10">
+                <Image
+                  src="/image.png"
+                  alt="abc"
+                  width={60}
+                  height={60}
+                  className="p-1 bg-gradient-to-br from-indigo-500 border border-white/20 rounded-xl"
+                />
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                  How can I assist you today?
+                </h1>
+                <div className="w-full">
+                  <div className="relative overflow-hidden rounded-lg backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
+                    <form onSubmit={handleSubmit} className="relative z-10">
+                      <Input
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        className="h-[82px] rounded-lg border-0 bg-transparent pl-10 pr-20 text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
+                        placeholder="Ask me anything..."
+                      />
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 z-20">
+                        <Paperclip className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <Button
+                        type="submit"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-20"
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </form>
+                    <div className="absolute inset-0 z-20 pointer-events-none mix-blend-lighten">
+                      <SparklesCore
+                        id="searchBarParticles"
+                        background="transparent"
+                        minSize={0.4}
+                        maxSize={1.2}
+                        particleDensity={80}
+                        particleColor="#FFFFFF"
+                        className="w-full h-full"
+                      />
                     </div>
-                    <Button
-                      type="submit"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-20"
-                    >
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </form>
-                  <div className="absolute inset-0 z-20 pointer-events-none mix-blend-lighten">
-                    <SparklesCore
-                      id="searchBarParticles"
-                      background="transparent"
-                      minSize={0.4}
-                      maxSize={1.2}
-                      particleDensity={80}
-                      particleColor="#FFFFFF"
-                      className="w-full h-full"
-                    />
                   </div>
                 </div>
               </div>
@@ -205,8 +207,8 @@ export default function MainPage() {
             <div className="flex flex-col h-screen">
               <div className="flex-1 p-4 mt-16">
                 <div className="max-w-[770px] mx-auto">
-                  <MessageBoxWithGradient>
-                    <div className="h-[calc(100vh-240px)] mb-8 overflow-y-auto p-2 rounded-xl [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] ">
+                  <MessageBoxWithGradient>``
+                    <div className="h-[calc(100vh-240px)] mb-8 overflow-y-auto p-2 rounded-xl [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                       <div className="space-y-4">
                         {messages.map((message, index) => (
                           <div
@@ -217,8 +219,14 @@ export default function MainPage() {
                           >
                             <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
                               <img
-                                src={message.isUser ? "/image.png" : "/image2.png"}
-                                alt={message.isUser ? "User Avatar" : "AI Avatar"}
+                                src={
+                                  message.isUser
+                                    ? "/image.png"
+                                    : "/image2.png"
+                                }
+                                alt={
+                                  message.isUser ? "User Avatar" : "AI Avatar"
+                                }
                                 className="w-full h-full object-cover"
                               />
                             </div>
@@ -239,32 +247,31 @@ export default function MainPage() {
                   </MessageBoxWithGradient>
                 </div>
               </div>
-
               <div className="fixed bottom-16 left-16 right-0 p-4 bg-[#0F0F0F]">
                 <div className="max-w-[770px] mx-auto relative">
-                  <div className="border border-white/20 rounded-lg overflow-hidden bg-[#27272a]">
+                  <div className="relative overflow-hidden rounded-lg backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
                     <form onSubmit={handleSubmit} className="relative z-10">
                       <Input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        className="h-[56px] rounded-lg border-0 bg-black pl-10 pr-20 text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
-                        placeholder="Type your message..."
+                        className="h-[82px] rounded-lg border-0 bg-transparent pl-10 pr-20 text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
+                        placeholder="Type your message here..."
                       />
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                      <div className="absolute left-3 top-1/2 -translate-y-1/2 z-20">
                         <Paperclip className="h-5 w-5 text-gray-400" />
                       </div>
                       <Button
                         type="submit"
                         variant="ghost"
                         size="sm"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/10"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-20"
                       >
                         <Send className="h-4 w-4" />
                       </Button>
                     </form>
                     <div className="absolute inset-0 z-20 pointer-events-none mix-blend-lighten">
                       <SparklesCore
-                        id="searchBarParticlesInput"
+                        id="messageInputParticles"
                         background="transparent"
                         minSize={0.4}
                         maxSize={1.2}
