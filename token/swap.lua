@@ -34,7 +34,6 @@ end
 Handlers.add("GetBalance",
     getBalance,
     function(msg)
-        -- Update the balance in the balances table
         if msg.From == abcdTokenId then
             CurrentBalance.abcdToken = tonumber(msg.Tags.Balance)
             print("Balance updated for abcdToken: " .. CurrentBalance.abcdToken)

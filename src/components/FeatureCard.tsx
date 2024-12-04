@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 
 interface FeatureCardProps {
-  icon: React.ElementType; // Flexible type for any React component
+  icon: React.ElementType; 
   title: string;
   description: string;
 }

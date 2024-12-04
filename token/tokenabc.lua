@@ -46,11 +46,11 @@ local utils = {
 }
 
 
---[[
-     Initialize State
+-- --[[
+--      Initialize State
 
-     ao.id is equal to the Process.Id
-   ]]
+--      ao.id is equal to the Process.Id
+--    ]]
 --
 Variant = "0.0.3"
 
@@ -62,15 +62,15 @@ Name = 'ABC'
 Ticker = Ticker or 'ABC'
 Logo = Logo or 'SBCCXwwecBlDqRLUjb8dYABExTJXLieawf7m2aBJ-KY'
 
---[[
-     Add handlers for each incoming Action defined by the ao Standard Token Specification
-   ]]
---
+-- --[[
+--      Add handlers for each incoming Action defined by the ao Standard Token Specification
+--    ]]
+-- --
 
---[[
-     Info
-   ]]
---
+-- --[[
+--      Info
+--    ]]
+-- --
 Handlers.add('info', "Info", function(msg)
   msg.reply({
     Name = Name,
@@ -217,9 +217,7 @@ Handlers.add('totalSupply', "Total-Supply", function(msg)
   })
 end)
 
---[[
- Burn
-]] --
+-- burn
 Handlers.add('burn', 'Burn', function(msg)
   assert(type(msg.Quantity) == 'string', 'Quantity is required!')
   assert(bint(msg.Quantity) <= bint(Balances[msg.From]), 'Quantity must be less than or equal to the current balance!')
