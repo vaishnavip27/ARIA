@@ -279,7 +279,6 @@ export default function MainPage() {
                         <Send className="h-4 w-4" />
                       </Button>
                     </form>
-                    
                     <div className="absolute inset-0 z-20 pointer-events-none mix-blend-lighten">
                       <SparklesCore
                         id="searchBarParticles"
@@ -291,12 +290,11 @@ export default function MainPage() {
                         className="w-full h-full"
                       />
                     </div>
-                    
                   </div>
-                  <div className="mt-2 text-sm text-gray-400">
-                      Currently available functions: 1. Create token: provide in this format (Name,Ticker,Denomination,Total Supply)
-                    </div>
                 </div>
+                <div className="mt-2 text-sm text-gray-400">
+          Currently available functions: 1. Create token: provide in this format (Name,Ticker,Denomination,Total Supply)
+        </div>
               </div>
             </div>
           ) : (
@@ -365,3 +363,4 @@ export default function MainPage() {
     </div>
   );
 }
+
