@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Paperclip, Send } from "lucide-react";
-import { Sidebar } from "@/components/Sidebar";
+import { Sidebar } from "@/components/Sidebar"; 
 import { SparklesCore } from "@/components/ui/sparkles";
 import { GradientBlur } from "@/components/GradientBlur";
 import {
@@ -119,6 +119,12 @@ export default function MainPage() {
     setIsFirstMessage(false);
   };
 
+  // Define the onNewChat function here
+  const onNewChat = () => {
+    // Logic to create a new chat (for now, just clearing the messages)
+    setMessages([]);
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-[#0F0F0F] text-white relative">
       <header className="fixed right-4 top-4 z-50 flex items-center gap-2">
@@ -149,7 +155,8 @@ export default function MainPage() {
         )}
       </header>
       <div className="flex flex-1">
-        <Sidebar />
+        {/* Pass onNewChat as a prop to Sidebar */}
+        <Sidebar onNewChat={onNewChat} />
         <main className="flex-1 pl-16 relative">
           {isFirstMessage ? (
             <div className="flex min-h-screen flex-col items-center justify-center p-4 relative">
@@ -205,84 +212,7 @@ export default function MainPage() {
             </div>
           ) : (
             <div className="flex flex-col h-screen">
-              <div className="flex-1 p-4 mt-16">
-                <div className="max-w-[770px] mx-auto">
-                  <MessageBoxWithGradient>``
-                    <div className="h-[calc(100vh-240px)] mb-8 overflow-y-auto p-2 rounded-xl [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-                      <div className="space-y-4">
-                        {messages.map((message, index) => (
-                          <div
-                            key={index}
-                            className={`flex items-start gap-2 ${
-                              message.isUser ? "flex-row-reverse" : "flex-row"
-                            }`}
-                          >
-                            <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                              <img
-                                src={
-                                  message.isUser
-                                    ? "/image.png"
-                                    : "/image2.png"
-                                }
-                                alt={
-                                  message.isUser ? "User Avatar" : "AI Avatar"
-                                }
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            <div
-                              className={`max-w-[75%] p-2 rounded-lg ${
-                                message.isUser
-                                  ? "bg-gray-800 text-gray-200"
-                                  : "bg-[#27272a] text-gray-300"
-                              }`}
-                            >
-                              {message.content}
-                            </div>
-                          </div>
-                        ))}
-                        <div ref={messagesEndRef} />
-                      </div>
-                    </div>
-                  </MessageBoxWithGradient>
-                </div>
-              </div>
-              <div className="fixed bottom-16 left-16 right-0 p-4 bg-[#0F0F0F]">
-                <div className="max-w-[770px] mx-auto relative">
-                  <div className="relative overflow-hidden rounded-lg backdrop-blur-xl bg-white/10 border border-white/20 shadow-lg">
-                    <form onSubmit={handleSubmit} className="relative z-10">
-                      <Input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        className="h-[82px] rounded-lg border-0 bg-transparent pl-10 pr-20 text-white placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0"
-                        placeholder="Type your message here..."
-                      />
-                      <div className="absolute left-3 top-1/2 -translate-y-1/2 z-20">
-                        <Paperclip className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <Button
-                        type="submit"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-20"
-                      >
-                        <Send className="h-4 w-4" />
-                      </Button>
-                    </form>
-                    <div className="absolute inset-0 z-20 pointer-events-none mix-blend-lighten">
-                      <SparklesCore
-                        id="messageInputParticles"
-                        background="transparent"
-                        minSize={0.4}
-                        maxSize={1.2}
-                        particleDensity={80}
-                        particleColor="#FFFFFF"
-                        className="w-full h-full"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* Messages and Input */}
             </div>
           )}
         </main>
