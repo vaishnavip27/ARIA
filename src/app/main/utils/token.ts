@@ -1,17 +1,18 @@
 function tokenContract(
-    amount: number,
+    totalSupply: number,
     name: string,
     ticker: string,
     denomination: number,
     logo: string,
     address: string
   ) {
+    console.log(totalSupply, name, ticker,denomination, logo,address);
     return `
       local bint = require('.bint')(256)
       local ao = require('ao')
       local json = require('json')
       
-      if not Balances then Balances = { ['${address}'] = tostring(bint(${amount} * 1e12)) } end
+      if not Balances then Balances = { ['${address}'] = tostring(bint(${totalSupply} * 1e12)) } end
       if Name ~= '${name}' then Name = '${name}' end
       if Ticker ~= '${ticker}' then Ticker = '${ticker}' end
       if Denomination ~= ${denomination} then Denomination = ${denomination} end

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, PanelLeft, Zap } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { SidebarButton } from './SideBarButton';
+import Image from "next/image";
 
 interface SidebarProps {
   onNewChat: () => void;
@@ -24,7 +25,7 @@ export function Sidebar({ onNewChat }: SidebarProps) {
         <div className="p-3 w-full">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
-              <Zap className="h-5 w-5" />
+              <Image src="/image.png" alt="123" height={28} width={28}></Image>
             </div>
             <div className={cn(
               "flex-1 overflow-hidden transition-[width,opacity] duration-300 ease-in-out",

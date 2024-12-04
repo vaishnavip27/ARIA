@@ -94,7 +94,7 @@ export default function MainPage() {
 
     try {
       const signer = createDataItemSigner(window.arweaveWallet);
-
+      console.log(totalSupply,name,ticker,denomination)
       const msg = await message({
         process: process as string,
         data: tokenContract(
@@ -108,9 +108,10 @@ export default function MainPage() {
         signer,
         tags: [{ name: "Action", value: "Eval" }],
       });
+      console.log(msg)
 
       const { Output } = await result({
-        message: msg,
+        message: msg.toString(),
         process: process as string,
       });
 
@@ -118,7 +119,7 @@ export default function MainPage() {
 
       if (Output !== undefined) {
         await message({
-          process: "byU9XxUliRVDy1lxaZ1zX0GNDa56zV8rU2dm3jd9DiA",
+          process: process as string,
           signer,
           tags: [
             { name: "Action", value: "Update" },
@@ -164,7 +165,7 @@ export default function MainPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
-
+  
     if (!address) {
       const connected = await handleConnect();
       if (!connected) {
@@ -178,23 +179,38 @@ export default function MainPage() {
         return;
       }
     }
-
+  
     setMessages((prev) => [...prev, { content: input, isUser: true }]);
-
+  
     // Show processing message
     setMessages((prev) => [
       ...prev,
       { content: "I'm processing your request: ", isUser: false },
     ]);
-
+  
     setInput("");
     setIsFirstMessage(false);
-
-    // Call deployToken function with example parameters
-    const processId = await deployToken("ExampleToken", "EXT", 18, 1000000);
-
+    console.log(input);
+    const [name, ticker, denomination, totalSupply] = input.split(',');
+  
+    // Convert denomination and totalSupply to numbers
+    const denominationNumber = Number(denomination);
+    const totalSupplyNumber = Number(totalSupply);
+  
+    // Check if denomination and totalSupply are valid numbers
+    if (isNaN(denominationNumber) || isNaN(totalSupplyNumber)) {
+      setMessages((prev) => [
+        ...prev,
+        { content: "Invalid denomination or total supply value.", isUser: false },
+      ]);
+      return;
+    }
+  
+    // Call deployToken function with the converted values
+    const processId = await deployToken(name, ticker, denominationNumber, totalSupplyNumber);
+  
     // Show deployment result
-    if (processId) {
+    if (processId) {  
       setMessages((prev) => [
         ...prev,
         { content: `Token deployed at ${processId}`, isUser: false },
@@ -206,6 +222,7 @@ export default function MainPage() {
       ]);
     }
   };
+  
 
   const handleNewChat = () => {
     setMessages([]);
