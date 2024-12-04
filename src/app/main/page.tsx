@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Paperclip, Send } from "lucide-react";
+import { Paperclip, Send } from 'lucide-react';
 import { Sidebar } from "@/components/Sidebar";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { GradientBlur } from "@/components/GradientBlur";
@@ -13,6 +13,14 @@ import {
   disconnectFromArConnect,
   isWalletConnected,
 } from "@/lib/arconnect";
+import {
+  connect,
+  createDataItemSigner,
+  message,
+  result,
+} from "@permaweb/aoconnect";
+import { AOModule, AOScheduler } from "./utils/constants";
+import tokenContract from "./utils/token";
 
 interface Message {
   content: string;
@@ -22,9 +30,7 @@ interface Message {
 const MessageBoxWithGradient = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="relative w-full">
-      {/* Gradient background */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 opacity-75 blur-lg" />
-      {/* Additional gradient layer for depth */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-500 via-transparent to-transparent opacity-50" />
       <div className="relative">{children}</div>
     </div>
@@ -62,6 +68,73 @@ export default function MainPage() {
     };
     checkWalletStatus();
   }, []);
+
+  const spawnProcess = async () => {
+    const ao = connect();
+
+    try {
+      const result = await ao.spawn({
+        module: AOModule,
+        scheduler: AOScheduler,
+        signer: createDataItemSigner(window.arweaveWallet),
+      });
+
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.error("Failed to spawn process:", error);
+      return null;
+    }
+  };
+
+  const deployToken = async (name: string, ticker: string, denomination: number, totalSupply: number) => {
+    const process = await spawnProcess();
+
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    try {
+      const signer = createDataItemSigner(window.arweaveWallet);
+
+      const msg = await message({
+        process: process as string,
+        data: tokenContract(
+          totalSupply,
+          name,
+          ticker,
+          denomination,
+          "www.google.com",
+          address as string
+        ),
+        signer,
+        tags: [{ name: "Action", value: "Eval" }],
+      });
+
+      const { Output } = await result({
+        message: msg,
+        process: process as string,
+      });
+
+      console.log(Output);
+
+      if (Output !== undefined) {
+        await message({
+          process: "byU9XxUliRVDy1lxaZ1zX0GNDa56zV8rU2dm3jd9DiA",
+          signer,
+          tags: [
+            { name: "Action", value: "Update" },
+            { name: "Process", value: process as string },
+          ],
+        });
+        return process;
+      } else {
+        alert("Could not deploy your token! Please try again.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error during token deployment:", error);
+      return null;
+    }
+  };
 
   const handleConnect = async () => {
     setIsConnecting(true);
@@ -108,15 +181,30 @@ export default function MainPage() {
 
     setMessages((prev) => [...prev, { content: input, isUser: true }]);
 
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { content: "I'm processing your request: " + input, isUser: false },
-      ]);
-    }, 500);
+    // Show processing message
+    setMessages((prev) => [
+      ...prev,
+      { content: "I'm processing your request: ", isUser: false },
+    ]);
 
     setInput("");
     setIsFirstMessage(false);
+
+    // Call deployToken function with example parameters
+    const processId = await deployToken("ExampleToken", "EXT", 18, 1000000);
+
+    // Show deployment result
+    if (processId) {
+      setMessages((prev) => [
+        ...prev,
+        { content: `Token deployed at ${processId}`, isUser: false },
+      ]);
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        { content: "Failed to deploy token. Please try again.", isUser: false },
+      ]);
+    }
   };
 
   const handleNewChat = () => {
@@ -191,6 +279,7 @@ export default function MainPage() {
                         <Send className="h-4 w-4" />
                       </Button>
                     </form>
+                    
                     <div className="absolute inset-0 z-20 pointer-events-none mix-blend-lighten">
                       <SparklesCore
                         id="searchBarParticles"
@@ -202,7 +291,11 @@ export default function MainPage() {
                         className="w-full h-full"
                       />
                     </div>
+                    
                   </div>
+                  <div className="mt-2 text-sm text-gray-400">
+                      Currently available functions: 1. Create token: provide in this format (Name,Ticker,Denomination,Total Supply)
+                    </div>
                 </div>
               </div>
             </div>

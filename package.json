@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@permaweb/aoconnect": "^0.0.62",
     "@radix-ui/react-slot": "^1.1.0",
     "@tsparticles/engine": "^3.7.1",
     "@tsparticles/react": "^3.0.0",
